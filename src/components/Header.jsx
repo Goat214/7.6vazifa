@@ -3,7 +3,7 @@ import useTheme from "../hook/useTheme";
 import { FiMoon, FiSunrise } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
-
+import { FaPowerOff } from "react-icons/fa";
 
 function Header() {
   const { user } = useSelector((store) => store.user);
@@ -76,7 +76,7 @@ function Header() {
     height={40}
     className="rounded-full object-cover"
   />
-  <button onClick={handleLogout} className="btn btn-outline btn-sm mr-5">Log Out</button>
+  <button onClick={handleLogout} className="btn btn-outline btn-sm mr-5"><FaPowerOff /></button>
 
 
           <label className="swap swap-rotate">
