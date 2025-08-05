@@ -78,9 +78,9 @@ function Header() {
     alt={user?.displayName || "User Avatar"}
     width={40}
     height={40}
-    className="rounded-full object-cover"
+    className="rounded-full object-cover ml-2"
   />
-  <button onClick={logout} className="btn btn-outline btn-sm mr-5"><FaPowerOff /></button>
+  <button onClick={logout} className="btn btn-outline btn-sm mr-5 ml-2"><FaPowerOff /></button>
 
 
           <label className="swap swap-rotate">

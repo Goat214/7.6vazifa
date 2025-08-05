@@ -5,10 +5,14 @@ import { login } from "../app/features/userSlice";
 import { toast } from "react-hot-toast";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
+import md5 from "md5";
 
 export const useSignup = () => {
   const [isPending, setIsPending] = useState(false);
   const dispatch = useDispatch();
+
+  const email = auth.currentUser.email.trim().toLowerCase();
+  const hash = md5(email);
 
   const signup = async (displayName, email, password) => {
     setIsPending(true);
@@ -20,8 +24,7 @@ export const useSignup = () => {
 
       await updateProfile(req.user, {
         displayName,
-        photoURL:
-          "https://api.dicebear.com/9.x/lorelei/svg?seed=" + displayName,
+        photoURL: `https://www.gravatar.com/avatar/${hash}?d=identicon`,
       });
 
       await setDoc(doc(db, "users", auth.currentUser.uid), {
