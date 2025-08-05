@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { login } from "../app/features/userSlice";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import { doc, updateDoc } from "firebase/firestore";
 
 export const useLogin = () => {
   const [isPending, setIsPending] = useState(false);
@@ -18,12 +19,19 @@ export const useLogin = () => {
         throw new Error("Authentication failed");
       }
 
-      dispatch(login({
-        uid: res.user.uid,
-        email: res.user.email,
-        displayName: res.user.displayName,
-        photoURL: res.user.photoURL,
-      }));
+      const user = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(user, {
+        online: true,
+      });
+
+      dispatch(
+        login({
+          uid: res.user.uid,
+          email: res.user.email,
+          displayName: res.user.displayName,
+          photoURL: res.user.photoURL,
+        })
+      );
 
       toast.success(`Welcome back, ${res.user.displayName || res.user.email}!`);
     } catch (error) {

@@ -4,11 +4,13 @@ import { FiMoon, FiSunrise } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import { FaPowerOff } from "react-icons/fa";
-
+import { useDispatch } from "react-redux";
+import { useLogout } from "../hook/useLoagout";
 function Header() {
   const { user } = useSelector((store) => store.user);
-  const changeTheme = useTheme();
+  const changeTheme = useTheme();2
   const auth = getAuth();
+  const dispatch = useDispatch()
   function handleLogout() {
     signOut(auth)
       .then(() => {
@@ -20,6 +22,8 @@ function Header() {
         console.error("Logout error:", error);
       });
   }
+
+  const {isPending, logout}= useLogout()
   return (
     <div className="bg-base-100 shadow-sm">
       <div className="navbar align-elements">
@@ -76,7 +80,7 @@ function Header() {
     height={40}
     className="rounded-full object-cover"
   />
-  <button onClick={handleLogout} className="btn btn-outline btn-sm mr-5"><FaPowerOff /></button>
+  <button onClick={logout} className="btn btn-outline btn-sm mr-5"><FaPowerOff /></button>
 
 
           <label className="swap swap-rotate">

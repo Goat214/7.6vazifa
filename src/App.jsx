@@ -17,7 +17,6 @@ import { login, authReady } from "./app/features/userSlice";
 function App() {
   const dispatch = useDispatch();
   const { user, isAuthReady } = useSelector((state) => state.user);
-  
 
   const routes = createBrowserRouter([
     {
@@ -53,10 +52,12 @@ function App() {
   ]);
 
   onAuthStateChanged(auth, (user) => {
-    dispatch(login(user));
-   dispatch(authReady())
+    if (user?.displayName && user?.photoURL) {
+      dispatch(login(user));
+    }
+    dispatch(authReady());
   });
-  return<> {isAuthReady && <RouterProvider router={routes} />}</>;
+  return <> {isAuthReady && <RouterProvider router={routes} />}</>;
 }
 
 export default App;

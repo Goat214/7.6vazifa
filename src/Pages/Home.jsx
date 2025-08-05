@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import useFatch from "../hook/useFatch";
-import ImageCard from "../components/ImageCard";
 import toast, { Toaster } from "react-hot-toast";
+import { useCollection } from "../hook/useCollection";
+import UserCard from "../components/UserCard";
+import LoadingCard from "./LoadingCard";
 
 const ACCESS_KEY = "74y5bYvkSO9WoY_E1KBgLOh8moLeSlOA3xoGLX0Bqa0";
 
 function Home() {
+  const { data: users, loading } = useCollection("users"); 
   const [searchParams, setSearchParams] = useState("");
   const [url, setUrl] = useState("");
 
@@ -25,38 +28,27 @@ function Home() {
   const { images, error } = useFatch(url);
 
   return (
-    <div className="max-w-6xl px-4 mx-auto flex flex-col items-center mt-10 mb-20">
-  <Toaster position="top-right" reverseOrder={false} />
+    <div className="max-w-6xl flex px-4 mx-auto items-start mt-10 mb-20 gap-6">
+      <div className="w-[800px]"></div>
 
-  <form onSubmit={handleSubmit} className="mb-6">
-    <input
-      type="search"
-      placeholder="Search images..."
-      className="px-4 py-2 border rounded-md shadow-md focus:outline-none flex-grow"
-      onChange={(e) => setSearchParams(e.target.value)}
-    />
-    <button
-      type="submit"
-      className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow"
-    >
-      Search
-    </button>
-  </form>
+      <div className="w-[357px] bg-white rounded-xl shadow-lg border border-gray-300 p-6 space-y-4">
+        <Toaster position="top-right" reverseOrder={false} />
+        
+        {loading && <LoadingCard />}
 
-  {!url && (
-    <p className="text-center mt-6 text-gray-500">
-      Iltimos, rasm qidirish uchun yuqoridagi qidiruv maydonidan foydalaning.
-    </p>
-  )}
+        {!loading && users && users.length > 0 && (
+          users.map((user) => (
+            <Fragment key={user.id}>
+              <UserCard user={user} />
+            </Fragment>
+          ))
+        )}
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full">
-    {images &&
-      images.results.map((image, index) => (
-        <ImageCard key={image.id + index} image={image} />
-      ))}
-  </div>
-</div>
-
+        {!loading && users && users.length === 0 && (
+          <p className="text-center text-gray-500">Foydalanuvchilar topilmadi.</p>
+        )}
+      </div>
+    </div>
   );
 }
 
