@@ -15,7 +15,7 @@ export const useLogout = () => {
     try {
       const user = doc(db, 'users', auth.currentUser.uid)
       await updateDoc(user,{
-        online: false
+        online: false,
       })
       await signOut(auth);
       dispatch(logOut());

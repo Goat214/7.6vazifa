@@ -11,9 +11,6 @@ export const useSignup = () => {
   const [isPending, setIsPending] = useState(false);
   const dispatch = useDispatch();
 
-  const email = auth.currentUser.email.trim().toLowerCase();
-  const hash = md5(email);
-
   const signup = async (displayName, email, password) => {
     setIsPending(true);
     try {
@@ -22,21 +19,21 @@ export const useSignup = () => {
         throw new Error("Authentication failed");
       }
 
+      const hash = md5(email.trim().toLowerCase());
+
       await updateProfile(req.user, {
         displayName,
         photoURL: `https://www.gravatar.com/avatar/${hash}?d=identicon`,
       });
 
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
+      await setDoc(doc(db, "users", req.user.uid), {
         online: true,
-        displayName: auth.currentUser.displayName,
-        photoURL: auth.currentUser.photoURL,
+        displayName: displayName,
+        photoURL: `https://www.gravatar.com/avatar/${hash}?d=identicon`,
       });
 
       dispatch(login(req.user));
-      toast.success(`Welcome ${req.user.displayName}`, {
-        duration: 3000, // 3 soniya
-      });
+      toast.success(`Welcome ${displayName}`, { duration: 3000 });
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -46,3 +43,4 @@ export const useSignup = () => {
 
   return { signup, isPending };
 };
+
